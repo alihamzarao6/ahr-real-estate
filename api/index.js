@@ -2,6 +2,9 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
+// models
+import User from "./models/userModel.js";
+
 dotenv.config();
 
 const app = express();
