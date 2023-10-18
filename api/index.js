@@ -5,19 +5,25 @@ import dotenv from "dotenv";
 // models
 import User from "./models/userModel.js";
 
-dotenv.config();
+// routers
+import userRouter from "./routes/userRoutes.js";
 
+dotenv.config();
 const app = express();
 
+// middlewares
+app.use("/api/v1/user", userRouter);
+
+
+// DB connection
 const connectToMongoDB = async () => {
   try {
-    // Options to avoid deprecation warnings. You can customize these based on your needs.
+    // Options to avoid deprecation warnings
     const options = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     };
 
-    // Connect to MongoDB using Mongoose
     await mongoose.connect(process.env.MONGO_URI, options);
 
     console.log("Connected to MongoDB");
