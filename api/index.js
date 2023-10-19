@@ -2,17 +2,18 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-// models
-import User from "./models/userModel.js";
 
 // routers
 import userRouter from "./routes/userRoutes.js";
+import authRouter from "./routes/authRoutes.js";
 
 dotenv.config();
 const app = express();
 
 // middlewares
+app.use(express.json());
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/auth", authRouter);
 
 
 // DB connection
