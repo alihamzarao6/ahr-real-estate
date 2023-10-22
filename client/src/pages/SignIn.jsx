@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice.js";
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  
+  // fetch(loading and error) of global state from store
+  const { loading, error } = useSelector((state) => state.user);
 
   // setFormData while the input being changing
   const handleChange = (e) => {
@@ -17,7 +21,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signInStart)
 
       // sending data to the server and get the response of this specific request
       const res = await fetch("/api/v1/auth/signin", {
@@ -32,18 +36,15 @@ const SignIn = () => {
 
       // this data.success or data.message will be in case of error and coming from error middleware from index.js
       if (data.success === false) {
-        setError(data.message);
-        setLoading(false);
+        dispatch(signInFailure(data.message))
         return;
       }
 
       // User created successfully
-      setLoading(false);
-      setError(null);
+      dispatch(signInSuccess(data));
       navigate("/");
     } catch (error) {
-      setLoading(false);
-      setError(error.message);
+      dispatch(signInFailure(error.message));
     }
 
   };
