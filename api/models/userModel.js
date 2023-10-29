@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      type: String,
+      default:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+    },
   },
   { timestamps: true }
 );
@@ -35,12 +40,10 @@ userSchema.methods.comparePassword = async function (userPassword) {
 };
 
 // generate jwt token from user's id
-userSchema.methods.generateJWT = function () {
-  const jwtToken = jwt.sign(
-    { _id: this._id, username: this.username },
-    process.env.JWT_SECRET_KEY,
-    { expiresIn: "1d" }
-  );
+userSchema.methods.generateJWT = function (_id, username) {
+  const jwtToken = jwt.sign({ _id, username }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "1d",
+  });
 
   return jwtToken;
 };
