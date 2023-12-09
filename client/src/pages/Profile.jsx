@@ -43,8 +43,7 @@ const Profile = () => {
     uploadTask.on("state_changed",
       (snapshot) => {
         // Calculate the upload progress and update the state
-        const uploadingProgress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const uploadingProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFilePerc(Math.round(uploadingProgress));
       },
       (error) => {
@@ -59,7 +58,7 @@ const Profile = () => {
         );
       }
     );
-    console.log(file);
+    // console.log(file);
     setFile(undefined);
   };
 
@@ -76,10 +75,10 @@ const Profile = () => {
           onChange={(e) => setFile(e.target.files[0])}
         />
         <img
+          onClick={() => fileRef.current.click()}
           src={formData.avatar || currentUser.avatar}
           alt="profile"
           className="rounded-full h-24 w-24 self-center object-cover cursor-pointer mt-2"
-          onClick={() => fileRef.current.click()}
         />
 
         <p className="text-sm self-center">

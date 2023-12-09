@@ -31,7 +31,6 @@ app.use((err, req, res, next) => {
 // DB connection
 const connectToMongoDB = async () => {
   try {
-    // Options to avoid deprecation warnings
     const options = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
