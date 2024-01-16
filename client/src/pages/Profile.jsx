@@ -8,7 +8,9 @@ import {
 } from "firebase/storage";
 
 import { app } from "../firebase.js";
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from "../redux/user/userSlice.js";
+import {
+  updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure, signOutUserStart, signOutUserSuccess, signOutUserFailure,
+} from "../redux/user/userSlice.js";
 
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -117,7 +119,27 @@ const Profile = () => {
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
-  }
+  };
+
+
+  const handleSignOut = async () => {
+    try {
+      dispatch(signOutUserStart());
+
+      const resp = await fetch("/api/v1/auth/signout");
+
+      const data = resp.json();
+
+      if (data.success === false) {
+        dispatch(signOutUserFailure(data.message));
+        return;
+      }
+
+      dispatch(signOutUserSuccess(data));
+    } catch (error) {
+      dispatch(signOutUserFailure(error.message));
+    }
+  };
 
 
   return (
@@ -185,7 +207,7 @@ const Profile = () => {
         <span onClick={handleDeleteUser} className="text-red-700 font-medium cursor-pointer">
           Delete account
         </span>
-        <span className="text-red-700 font-medium cursor-pointer">
+        <span onClick={handleSignOut} className="text-red-700 font-medium cursor-pointer">
           Sign out
         </span>
       </div>
