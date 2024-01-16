@@ -8,7 +8,7 @@ import {
 } from "firebase/storage";
 
 import { app } from "../firebase.js";
-import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlice.js";
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from "../redux/user/userSlice.js";
 
 const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -85,7 +85,7 @@ const Profile = () => {
 
       const data = await res.json();
 
-      if(data.success === false) {
+      if (data.success === false) {
         dispatch(updateUserFailure(data.message));
         return;
       }
@@ -94,6 +94,28 @@ const Profile = () => {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
+    }
+  };
+
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+
+      const resp = await fetch(`/api/v1/user/delete/${currentUser._id}`, {
+        method: 'DELETE'
+      });
+
+      const data = resp.json();
+
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
     }
   }
 
@@ -155,12 +177,12 @@ const Profile = () => {
         />
 
         <button disabled={loading} className="bg-slate-700 rounded-lg p-3 text-white uppercase hover:opacity-95 disabled:opacity-80">
-          {loading? 'Loading...' : 'Update'}
+          {loading ? 'Loading...' : 'Update'}
         </button>
       </form>
 
       <div className="flex justify-between mt-5">
-        <span className="text-red-700 font-medium cursor-pointer">
+        <span onClick={handleDeleteUser} className="text-red-700 font-medium cursor-pointer">
           Delete account
         </span>
         <span className="text-red-700 font-medium cursor-pointer">
