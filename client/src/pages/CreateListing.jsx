@@ -344,7 +344,7 @@ const CreateListing = () => {
                   value={formData.discountPrice}
                 />
                 <div className="flex flex-col items-center">
-                  <span>Discounted Price</span>
+                  <span>Price After Discount</span>
                   {formData.type === "rent" && (
                     <span className="text-xs">($ / month)</span>
                   )}
