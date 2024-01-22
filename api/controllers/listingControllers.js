@@ -72,7 +72,6 @@ export const getListing = async (req, res, next) => {
 export const getListings = async (req, res, next) => {
   try {
     const limit = parseInt(req.query.limit) || 9;
-
     const startIndex = parseInt(req.query.startIndex) || 0;
 
     let offer = req.query.offer;
@@ -97,7 +96,7 @@ export const getListings = async (req, res, next) => {
     let type = req.query.type;
 
     if (type === undefined || type === "all") {
-      type = { $in: ["rent", "sale"] };
+      type = { $in: ["sale", "rent"] };
     }
 
     const searchTerm = req.query.searchTerm || "";
