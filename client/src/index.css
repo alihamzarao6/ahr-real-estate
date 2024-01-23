@@ -5,3 +5,9 @@
 body {
     background-color: rgb(241, 245, 241);
 }
+
+@media (min-width: 1367px) {
+    .customClass{
+        width: 330px !important;
+    }
+}
