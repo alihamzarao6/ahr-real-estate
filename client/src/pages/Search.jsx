@@ -17,7 +17,7 @@ const Search = () => {
 
     const [loading, setLoading] = useState(false);
     const [listings, setListings] = useState([]);
-    console.log(listings);
+    const [showMore, setShowMore] = useState(false);
 
     // We have to persist the URL params for other fields if one of them is changed and also setting the new value for that field
     useEffect(() => {
@@ -53,10 +53,17 @@ const Search = () => {
 
         const fetchListings = async () => {
             setLoading(true);
+            setShowMore(false);
 
             const searchQuery = urlParams.toString();
             const res = await fetch(`/api/v1/listing/get?${searchQuery}`);
             const data = await res.json();
+
+            if (data.length > 8) {
+                setShowMore(true);
+            } else {
+                setShowMore(false);
+            }
 
             setListings(data);
             setLoading(false);
@@ -112,6 +119,24 @@ const Search = () => {
 
         navigate(`/search?${searchQuery}`);
     };
+
+    const onShowMoreClick = async () => {
+        const numberOfListings = listings.length;
+        const startIndex = numberOfListings;
+
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('startIndex', startIndex);
+        const searchQuery = urlParams.toString();
+
+        const resp = await fetch(`/api/v1/listing/get?${searchQuery}`);
+        const data = await resp.json();
+
+        if (data.length < 9) {
+            setShowMore(false);
+        }
+
+        setListings([...listings, ...data]);
+    }
 
     return (
         <div className="flex flex-col md:flex-row">
@@ -238,7 +263,16 @@ const Search = () => {
                     {!loading && listings && listings.map((listing) => (
                         <ListingItem key={listing._id} listing={listing} />
                     ))}
-                    
+
+                    {showMore && (
+                        <button
+                            onClick={onShowMoreClick}
+                            className="text-green-700 hover:underline p-7 text-center w-full">
+                            Show More
+                        </button>
+                    )
+                    }
+
                 </div>
             </div>
             {/* Right side div Ends */}
