@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 // routers
 import userRouter from "./routes/userRoutes.js";
@@ -11,12 +12,23 @@ import listingRouter from "./routes/listingRouter.js";
 dotenv.config();
 const app = express();
 
+// create a dynamic route for all other servers and computers
+const __dirname = path.resolve();
+
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
+
+// routing middlwares
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/listing", listingRouter);
+
+app.use(express.static(path.join(__dirname + "/client/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "client" + "dist" + "index.html"));
+});
 
 // middleware to handle error
 app.use((err, req, res, next) => {
